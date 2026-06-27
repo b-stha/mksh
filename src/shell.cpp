@@ -12,11 +12,7 @@ void Shell::run() {
 
         std::vector<std::string> args;
         args = tokenize(input);
-        std::cout << "Tokens: ";
-        for (const auto& token : args) {
-            std::cout << token << " ";
-        }
-        std::cout << std::endl;
+        executor.execute(args);
     }
 }
 
