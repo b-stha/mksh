@@ -39,7 +39,12 @@ namespace mksh::builtin {
             exit(0);
         } 
         else if (cmd == "help") {
-
+            std::cout << "mksh: A simple shell implementation\n";
+            std::cout << "Built-in commands:\n";
+            std::cout << "  cd [dir]    Change the current directory to 'dir'\n";
+            std::cout << "  exit       Exit the shell\n";
+            std::cout << "  help       Display this help message\n";
+            std::cout << "  pwd        Print the current working directory\n";
         }
         else if (cmd == "pwd") {
             char cwdPath[PATH_MAX];

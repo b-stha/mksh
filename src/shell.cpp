@@ -10,7 +10,7 @@ void Shell::run() {
         if (getcwd(cwdPath, sizeof(cwdPath)) == nullptr) {
             perror("pwd");
         }
-        std::cout << "mksh: " << cwdPath << "> ";
+        std::cout << "mksh: " << cwdPath << " > ";
         std::getline(std::cin, input);
         if (input == "exit") {
             break;
