@@ -1,7 +1,8 @@
-#include "include/shell/builtin.hpp"
+#include "shell/builtin.hpp"
 #include <unistd.h>
 #include <cstdlib>
 #include <iostream>
+#include <limits.h>
 
 namespace mksh::builtin {
     bool isBuiltin(const std::string& command) {
@@ -41,7 +42,13 @@ namespace mksh::builtin {
 
         }
         else if (cmd == "pwd") {
-
+            char cwdPath[PATH_MAX];
+            if (getcwd(cwdPath, sizeof(cwdPath)) != nullptr) {
+                std::cout << cwdPath << std::endl;
+            }
+            else {
+                perror("pwd");
+            }
         }
     }
 }
