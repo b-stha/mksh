@@ -10,6 +10,7 @@ add_executable(mksh
     src/main.cpp
     src/shell.cpp
     src/executor.cpp
+    src/builtin.cpp
 )
 
 target_include_directories(mksh PRIVATE

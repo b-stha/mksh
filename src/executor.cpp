@@ -14,7 +14,7 @@ void Executor::execute(const std::vector<std::string>& args) {
 
     if (mksh::builtin::isBuiltin(args[0])) { // check if builtin
         // execute builtin command
-        mksh::builtin::run(args);
+        return mksh::builtin::run(args);;
     }
 
 
