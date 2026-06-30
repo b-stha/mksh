@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "shell/executor.hpp"
+#include "shell/lexer.hpp"
 
 class Shell {
 public:
@@ -9,5 +10,6 @@ public:
 private:
     Executor executor;
     std::string input;
+    Lexer lexer;
 };
 

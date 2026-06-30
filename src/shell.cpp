@@ -17,7 +17,10 @@ void Shell::run() {
         }
 
         std::vector<std::string> args;
-        args = tokenize(input);
+        args = lexer.tokenize(input);
+        for (const auto& arg : args) {
+            std::cout << arg << " " << std::endl;
+        }
         executor.execute(args);
     }
 }

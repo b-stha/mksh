@@ -11,6 +11,7 @@ add_executable(mksh
     src/shell.cpp
     src/executor.cpp
     src/builtin.cpp
+    src/lexer.cpp
 )
 
 target_include_directories(mksh PRIVATE

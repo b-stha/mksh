@@ -5,7 +5,7 @@
 
 class Lexer {
 public:
-    const std::vector<std::string> tokenizer(const std::string& input);
+    const std::vector<std::string> tokenize(const std::string& input);
 private:
     std::unordered_set<std::string> validOps = {"|", "||", "&", "&&", "<", "<<", "<<<", ">", ">>", ">|", "(", ")", ";"};
 };

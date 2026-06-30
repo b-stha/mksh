@@ -3,7 +3,7 @@
 #include "shell/lexer.hpp"
 #include <cctype>
 
-const std::vector<std::string> Lexer::tokenizer(const std::string& input) {
+const std::vector<std::string> Lexer::tokenize(const std::string& input) {
     size_t i = 0;
     int state = 0;
     std::vector<std::string> lexemes;
@@ -47,7 +47,6 @@ const std::vector<std::string> Lexer::tokenizer(const std::string& input) {
             }
             else if (input[i] == '\'' || input[i] == '\"') {
                 state = 2; // go to STRING state
-                currLex += input[i];
                 i++;
             }
             else if (input[i] == '|' ||
@@ -72,9 +71,8 @@ const std::vector<std::string> Lexer::tokenizer(const std::string& input) {
             break;
         case 2: // STRING state
             if (input[i] == '\'' || input[i] == '\"') {
-                currLex += input[i];
-                i++;
                 state = 1; // go back to WORD state
+                i++;
             }
             else {
                 currLex += input[i];
