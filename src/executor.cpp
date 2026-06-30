@@ -23,6 +23,7 @@ void Executor::execute(const std::vector<std::string>& args) {
 
     if (pid < 0) { // fork failure
         std::cerr << "Fork failed." << std::endl;
+        return;
     }
     else if (pid == 0) { // child process
         std::vector<char*> c_args;
