@@ -8,7 +8,6 @@ public:
     void run();
 private:
     Executor executor;
-    std::vector<std::string> tokenize(const std::string& input);
     std::string input;
 };
 

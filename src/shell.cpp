@@ -21,24 +21,3 @@ void Shell::run() {
         executor.execute(args);
     }
 }
-
-std::vector<std::string> Shell::tokenize(const std::string& input) {
-    std::vector<std::string> tokens;
-    size_t left = 0, right = 0;
-
-    while (right < input.length()) {
-        if (std::isspace(input[right])) {
-            if (left != right) {
-                tokens.push_back(input.substr(left, right - left));
-            }
-            left = right + 1;
-        }
-        right++;
-    }
-
-    if (left != right) {
-        tokens.push_back(input.substr(left, right - left));
-    }
-
-    return tokens;
-}
