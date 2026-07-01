@@ -1,11 +1,15 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
+#include "token.hpp"
 
-class Lexer {
-public:
-    const std::vector<std::string> tokenize(const std::string& input);
-private:
-    std::unordered_set<std::string> validOps = {"|", "||", "&", "&&", "<", "<<", "<<<", ">", ">>", ">|", "(", ")", ";"};
-};
+namespace mksh {
+    class Lexer {
+    public:
+        const std::vector<std::string> tokenize(const std::string& input);
+    private:
+        std::vector<Token> tokens;
+        static const std::unordered_map<std::string, TokenType> opTypes;
+    };
+}
