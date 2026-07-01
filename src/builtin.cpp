@@ -12,12 +12,12 @@ namespace mksh::builtin {
         return false;
     }
 
-    void run(const std::vector<std::string>& args) {
+    void run(const std::vector<mksh::Token>& args) {
         if (args.empty()) {
             return;
         }
 
-        const std::string& cmd = args[0];
+        const std::string& cmd = args[0].value;
 
         if (cmd == "cd") {
             if (args.size() == 1) { // cd to home dir
@@ -27,7 +27,7 @@ namespace mksh::builtin {
                 }
             }
             else if (args.size() == 2) { // cd to specified dir
-                if (chdir(args[1].c_str()) != 0) {
+                if (chdir(args[1].value.c_str()) != 0) {
                     perror("cd");
                 }
             }

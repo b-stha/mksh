@@ -3,10 +3,10 @@
 #include "shell/lexer.hpp"
 #include <cctype>
 
-const std::vector<std::string> mksh::Lexer::tokenize(const std::string& input) {
+const std::vector<mksh::Token> mksh::Lexer::tokenize(const std::string& input) {
     size_t i = 0;
     int state = 0;
-    std::vector<std::string> lexemes;
+    std::vector<mksh::Token> tokens;
     std::string currLex = "";
 
     while (i < input.size()) {
@@ -40,7 +40,7 @@ const std::vector<std::string> mksh::Lexer::tokenize(const std::string& input) {
             break;
         case 1: // WORD state
             if (std::isspace(input[i])) {
-                lexemes.push_back(currLex);
+                tokens.push_back(mksh::Token{currLex, mksh::TokenType::WORD});
                 currLex.clear();
                 state = 0; // go back to READ CHARACTER state
                 i++;
@@ -58,7 +58,7 @@ const std::vector<std::string> mksh::Lexer::tokenize(const std::string& input) {
                      input[i] == ';' ) {
                 state = 3; // go to OPERATOR state
                 if (!currLex.empty()) {
-                    lexemes.push_back(currLex);
+                    tokens.push_back(mksh::Token{currLex, mksh::TokenType::WORD});
                     currLex.clear();
                 }
                 currLex += input[i];
@@ -84,16 +84,16 @@ const std::vector<std::string> mksh::Lexer::tokenize(const std::string& input) {
                 currLex += input[i];
                 i++;
             }
-            lexemes.push_back(currLex);
+            tokens.push_back(mksh::Token{currLex, opTypes.at(currLex)});
             currLex.clear();
             state = 0; // go back to READ CHARACTER state
             break;
         }
     }
     if (!currLex.empty()) {
-        lexemes.push_back(currLex);
+        tokens.push_back(mksh::Token{currLex, mksh::TokenType::WORD});
     }
-    return lexemes;
+    return tokens;
 }
 
 const std::unordered_map<std::string, mksh::TokenType> mksh::Lexer::opTypes = {

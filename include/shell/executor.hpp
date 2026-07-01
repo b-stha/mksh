@@ -1,8 +1,11 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "token.hpp"
 
-class Executor {
-public:
-    void execute(const std::vector<std::string>& args);
-};
+namespace mksh{
+    class Executor {
+    public:
+        void execute(const std::vector<Token>& args);
+    };
+}

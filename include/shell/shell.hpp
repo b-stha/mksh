@@ -4,12 +4,14 @@
 #include "shell/executor.hpp"
 #include "shell/lexer.hpp"
 
-class Shell {
-public:
-    void run();
-private:
-    Executor executor;
-    std::string input;
-    mksh::Lexer lexer;
-};
+namespace mksh {
+    class Shell {
+    public:
+        void run();
+    private:
+        Executor executor;
+        std::string input;
+        Lexer lexer;
+    };
+}
 

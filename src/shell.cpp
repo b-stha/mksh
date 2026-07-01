@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <unistd.h>
 
-void Shell::run() {
+void mksh::Shell::run() {
     while (true) {
         char cwdPath[PATH_MAX];
         if (getcwd(cwdPath, sizeof(cwdPath)) == nullptr) {
@@ -16,10 +16,10 @@ void Shell::run() {
             break;
         }
 
-        std::vector<std::string> args;
+        std::vector<mksh::Token> args;
         args = lexer.tokenize(input);
         for (const auto& arg : args) {
-            std::cout << arg << " " << std::endl;
+            std::cout << arg.value << ", " << static_cast<int>(arg.type) << " " << std::endl;
         }
         executor.execute(args);
     }

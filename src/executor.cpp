@@ -6,15 +6,15 @@
 #include <sys/wait.h>
 #include <iostream>
 
-void Executor::execute(const std::vector<std::string>& args) {
+void mksh::Executor::execute(const std::vector<mksh::Token>& args) {
     if (args.empty()) {
         return;
     }
 
 
-    if (mksh::builtin::isBuiltin(args[0])) { // check if builtin
+    if (mksh::builtin::isBuiltin(args[0].value)) { // check if builtin
         // execute builtin command
-        return mksh::builtin::run(args);;
+        return mksh::builtin::run(args);
     }
 
 
@@ -28,7 +28,7 @@ void Executor::execute(const std::vector<std::string>& args) {
     else if (pid == 0) { // child process
         std::vector<char*> c_args;
         for (const auto& arg : args) {
-            c_args.push_back(const_cast<char*>(arg.c_str()));
+            c_args.push_back(const_cast<char*>(arg.value.c_str()));
         }
         c_args.push_back(nullptr); // execvp requires a null-terminated array
         execvp(c_args[0], c_args.data());

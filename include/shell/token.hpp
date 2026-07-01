@@ -20,7 +20,7 @@ namespace mksh {
     };
 
     struct Token {
-        TokenType type;
         std::string value;
+        TokenType type;
     };
 }
