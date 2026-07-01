@@ -1,9 +1,9 @@
-// Lexer for the shell. Tokenizes input using a state machine.
+// Lexer definition for the shell. Tokenizes input using a state machine.
 
 #include "shell/lexer.hpp"
 #include <cctype>
 
-const std::vector<std::string> Lexer::tokenize(const std::string& input) {
+const std::vector<std::string> mksh::Lexer::tokenize(const std::string& input) {
     size_t i = 0;
     int state = 0;
     std::vector<std::string> lexemes;
@@ -80,7 +80,7 @@ const std::vector<std::string> Lexer::tokenize(const std::string& input) {
             }
             break;
         case 3: // OPERATOR state
-            while (i < input.size() && validOps.contains(currLex + input[i])) {
+            while (i < input.size() && opTypes.contains(currLex + input[i])) {
                 currLex += input[i];
                 i++;
             }
@@ -95,3 +95,19 @@ const std::vector<std::string> Lexer::tokenize(const std::string& input) {
     }
     return lexemes;
 }
+
+const std::unordered_map<std::string, mksh::TokenType> mksh::Lexer::opTypes = {
+    {"|", mksh::TokenType::PIPE},
+    {"||", mksh::TokenType::OR},
+    {"&", mksh::TokenType::BACKGROUND},
+    {"&&", mksh::TokenType::AND},
+    {"<", mksh::TokenType::REDIRECT_IN},
+    {"<<", mksh::TokenType::HEREDOC},
+    {"<<<", mksh::TokenType::HERESTRING},
+    {">", mksh::TokenType::REDIRECT_OUT},
+    {">>", mksh::TokenType::REDIRECT_APPEND},
+    {">|", mksh::TokenType::CLOBBER},
+    {"(", mksh::TokenType::LPAREN},
+    {")", mksh::TokenType::RPAREN},
+    {";", mksh::TokenType::SEMICOLON}
+};
