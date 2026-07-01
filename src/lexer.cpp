@@ -2,10 +2,12 @@
 
 #include "shell/lexer.hpp"
 #include <cctype>
+#include <stdexcept>
 
 const std::vector<mksh::Token> mksh::Lexer::tokenize(const std::string& input) {
     size_t i = 0;
     int state = 0;
+    bool tokenInProg = false;
     std::vector<mksh::Token> tokens;
     std::string currLex = "";
 
@@ -16,9 +18,14 @@ const std::vector<mksh::Token> mksh::Lexer::tokenize(const std::string& input) {
                 state = 0; // stay in READ CHARACTER state
                 i++;
             } 
-            else if (input[i] == '\'' || input[i] == '\"') {
-                state = 2; // go to STRING state
-                currLex += input[i];
+            else if (input[i] == '\'') {
+                tokenInProg = true;
+                state = 2; // go to SINGLE QUOTE state
+                i++;
+            }
+            else if (input[i] == '\"') {
+                tokenInProg = true;
+                state = 3; // go to DOUBLE QUOTE state
                 i++;
             }
             else if (input[i] == '|' ||
@@ -28,25 +35,30 @@ const std::vector<mksh::Token> mksh::Lexer::tokenize(const std::string& input) {
                      input[i] == '(' ||
                      input[i] == ')' ||
                      input[i] == ';' ) {
-                state = 3; // go to OPERATOR state
-                currLex += input[i];
-                i++;
+                tokenInProg = true;
+                state = 4; // go to OPERATOR state
             }
             else { // any other character, part of a word
+                tokenInProg = true;
                 state = 1; // go to WORD state
                 currLex += input[i];
                 i++;
             }
             break;
         case 1: // WORD state
-            if (std::isspace(input[i])) {
+            if (std::isspace(input[i]) && tokenInProg) {
                 tokens.push_back(mksh::Token{currLex, mksh::TokenType::WORD});
                 currLex.clear();
+                tokenInProg = false;
                 state = 0; // go back to READ CHARACTER state
                 i++;
             }
-            else if (input[i] == '\'' || input[i] == '\"') {
-                state = 2; // go to STRING state
+            else if (input[i] == '\'') {
+                state = 2; // go to SINGLE QUOTE state
+                i++;
+            }
+            else if (input[i] == '\"') {
+                state = 3; // go to DOUBLE QUOTE state
                 i++;
             }
             else if (input[i] == '|' ||
@@ -56,21 +68,20 @@ const std::vector<mksh::Token> mksh::Lexer::tokenize(const std::string& input) {
                      input[i] == '(' ||
                      input[i] == ')' ||
                      input[i] == ';' ) {
-                state = 3; // go to OPERATOR state
-                if (!currLex.empty()) {
+                state = 4; // go to OPERATOR state
+                if (tokenInProg) {
                     tokens.push_back(mksh::Token{currLex, mksh::TokenType::WORD});
                     currLex.clear();
+                    tokenInProg = false;
                 }
-                currLex += input[i];
-                i++;
             }
             else { // any other character, continue in WORD state
                 currLex += input[i];
                 i++;
             }
             break;
-        case 2: // STRING state
-            if (input[i] == '\'' || input[i] == '\"') {
+        case 2: // SINGLE QUOTE state
+            if (input[i] == '\'') {
                 state = 1; // go back to WORD state
                 i++;
             }
@@ -79,19 +90,50 @@ const std::vector<mksh::Token> mksh::Lexer::tokenize(const std::string& input) {
                 i++;
             }
             break;
-        case 3: // OPERATOR state
+        case 3: // DOUBLE QUOTE state
+            if (input[i] == '\"') {
+                state = 1; // go back to WORD state
+                i++;
+            }
+            else {
+                currLex += input[i];
+                i++;
+            }
+            break;
+
+        case 4: // OPERATOR state
+            if (!tokenInProg) {
+                tokenInProg = true;
+            }
+            currLex += input[i]; // add the first character of the operator
+            i++;
             while (i < input.size() && opTypes.contains(currLex + input[i])) {
                 currLex += input[i];
                 i++;
             }
-            tokens.push_back(mksh::Token{currLex, opTypes.at(currLex)});
-            currLex.clear();
+            if (tokenInProg) {
+                tokens.push_back(mksh::Token{currLex, opTypes.at(currLex)});
+                tokenInProg = false;
+                currLex.clear();
+            }
             state = 0; // go back to READ CHARACTER state
             break;
         }
     }
-    if (!currLex.empty()) {
+
+    if (state == 2) {
+        // Handle unclosed single quote
+        throw std::runtime_error("Unclosed single quote in input");
+    }
+    else if (state == 3) {
+        // Handle unclosed double quote
+        throw std::runtime_error("Unclosed double quote in input");
+    }
+
+    if (tokenInProg) {
         tokens.push_back(mksh::Token{currLex, mksh::TokenType::WORD});
+        tokenInProg = false;
+        currLex.clear();
     }
     return tokens;
 }

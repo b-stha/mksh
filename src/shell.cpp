@@ -17,7 +17,13 @@ void mksh::Shell::run() {
         }
 
         std::vector<mksh::Token> args;
-        args = lexer.tokenize(input);
+        try {
+            args = lexer.tokenize(input);
+        } catch (const std::runtime_error& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+            continue;
+        }
+        
         for (const auto& arg : args) {
             std::cout << arg.value << ", " << static_cast<int>(arg.type) << " " << std::endl;
         }
