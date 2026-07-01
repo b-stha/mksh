@@ -15,7 +15,8 @@ namespace mksh {
         CLOBBER,
         LPAREN,
         RPAREN,
-        SEMICOLON
+        SEMICOLON,
+        WORD
     };
 
     struct Token {
