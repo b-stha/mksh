@@ -10,6 +10,6 @@ public:
 private:
     Executor executor;
     std::string input;
-    Lexer lexer;
+    mksh::Lexer lexer;
 };
 
